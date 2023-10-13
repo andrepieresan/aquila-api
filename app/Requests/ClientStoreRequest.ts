@@ -3,7 +3,7 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { schema, rules } from "@ioc:Adonis/Core/Validator";
 import { FormRequest } from "@ioc:Adonis/Addons/FormRequest";
 
-export default class UserStoreRequest extends FormRequest {
+export default class ClientStoreRequest extends FormRequest {
   constructor(protected context: HttpContextContract) {
     super(context);
   }
@@ -15,10 +15,10 @@ export default class UserStoreRequest extends FormRequest {
   public rules() {
     return {
       schema: schema.create({
-        username: schema.string([rules.maxLength(255)]),
-        name: schema.string([rules.maxLength(255)]),
-        role: schema.string.optional([rules.maxLength(255)]),
-        pwd: schema.string([rules.maxLength(255)]),
+        name: schema.string([rules.maxLength(64)]),
+        phone: schema.string([rules.maxLength(20)]),
+        document: schema.string.optional([rules.maxLength(64)]),
+        mail: schema.string.optional([rules.maxLength(255)]),
       }),
     };
   }
