@@ -30,7 +30,6 @@ export default class OsController {
   @formRequest()
   public async store({}, request: OsStoreRequest) {
     try {
-      console.log(request.body());
       const data = request.validated();
       return OsHistory.create(data);
     } catch (e) {
