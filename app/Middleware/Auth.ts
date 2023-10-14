@@ -21,7 +21,6 @@ export default class AuthMiddleware {
   protected async authenticate(
     auth: HttpContextContract["auth"],
     request: HttpContextContract["request"],
-
     response: HttpContextContract["response"]
   ) {
     const throwException = () => {
@@ -32,9 +31,8 @@ export default class AuthMiddleware {
       response.finish();
       throw new Error(message);
     };
-
-    let token = request.cookie("x-api");
-    let user_id = request.cookie("x-id");
+    let token = request.header("Authorization");
+    let user_id = request.header("xid");
 
     if (!token || !user_id) {
       throwException();
