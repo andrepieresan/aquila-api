@@ -1,14 +1,9 @@
 import { AuthenticationException } from "@adonisjs/auth/build/standalone";
-import type { GuardsList } from "@ioc:Adonis/Addons/Auth";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import ApiToken from "App/Models/ApiToken";
+import Env from "@ioc:Adonis/Core/Env";
+import jwt from "jsonwebtoken";
 
-/**
- * Auth middleware is meant to restrict un-authenticated access to a given route
- * or a group of routes.
- *
- * You must register this middleware inside `start/kernel.ts` file under the list
- * of named middleware.
- */
 export default class AuthMiddleware {
   /**
    * The URL to redirect to when request is Unauthorized
@@ -25,55 +20,42 @@ export default class AuthMiddleware {
    */
   protected async authenticate(
     auth: HttpContextContract["auth"],
-    guards: (keyof GuardsList)[]
-  ) {
-    /**
-     * Hold reference to the guard last attempted within the for loop. We pass
-     * the reference of the guard to the "AuthenticationException", so that
-     * it can decide the correct response behavior based upon the guard
-     * driver
-     */
-    let guardLastAttempted: string | undefined;
-    console.log("object");
-    for (let guard of guards) {
-      guardLastAttempted = guard;
+    request: HttpContextContract["request"],
 
-      if (await auth.use(guard).check()) {
-        /**
-         * Instruct auth to use the given guard as the default guard for
-         * the rest of the request, since the user authenticated
-         * succeeded here
-         */
-        auth.defaultGuard = guard;
-        return true;
-      }
+    response: HttpContextContract["response"]
+  ) {
+    const throwException = () => {
+      // console.log('estamos aquiaaa')
+      let message = "E_UNAUTHORIZED_ACCESS";
+      response.status(401);
+      response.send({ message });
+      response.finish();
+      throw new Error(message);
+    };
+
+    let token = request.cookie("x-api");
+    let user_id = request.cookie("x-id");
+
+    if (!token || !user_id) {
+      throwException();
     }
 
-    /**
-     * Unable to authenticate using any guard
-     */
-    throw new AuthenticationException(
-      "Unauthorized access",
-      "E_UNAUTHORIZED_ACCESS",
-      guardLastAttempted,
-      this.redirectTo
-    );
+    const apiUser = await ApiToken.query()
+      .where({ user_id })
+      .andWhere({ token })
+      .firstOrFail();
+
+    jwt.verify(apiUser.token, Env.get("API_KEY"));
   }
 
   /**
    * Handle request
    */
   public async handle(
-    { auth }: HttpContextContract,
-    next: () => Promise<void>,
-    customGuards: (keyof GuardsList)[]
+    { auth, request, response }: HttpContextContract,
+    next: () => Promise<void>
   ) {
-    /**
-     * Uses the user defined guards or the default guard mentioned in
-     * the config file
-     */
-    const guards = customGuards.length ? customGuards : [auth.name];
-    await this.authenticate(auth, guards);
+    await this.authenticate(auth, request, response);
     await next();
   }
 }
