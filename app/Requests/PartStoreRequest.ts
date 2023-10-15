@@ -3,7 +3,7 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { schema, rules } from "@ioc:Adonis/Core/Validator";
 import { FormRequest } from "@ioc:Adonis/Addons/FormRequest";
 
-export default class OsStoreRequest extends FormRequest {
+export default class PartStoreRequest extends FormRequest {
   constructor(protected context: HttpContextContract) {
     super(context);
   }
@@ -15,13 +15,13 @@ export default class OsStoreRequest extends FormRequest {
   public rules() {
     return {
       schema: schema.create({
-        client_id: schema.number(),
-        branch_id: schema.number.optional(),
-        product: schema.string([rules.maxLength(255)]),
-        product_serial: schema.string([rules.maxLength(255)]),
-        status: schema.string([rules.maxLength(255)]),
-        defect_obs: schema.string([rules.maxLength(255)]),
-        created_by: schema.number(),
+        os_number: schema.string(),
+        part_name: schema.string([rules.maxLength(255)]),
+        qtd: schema.string(),
+        sale_cost: schema.string(),
+        sale_value: schema.string(),
+        ticket: schema.string(),
+        created_at: schema.string(),
       }),
     };
   }

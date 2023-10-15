@@ -18,6 +18,13 @@ Route.group(() => {
 }).prefix("/user");
 
 Route.group(() => {
+  Route.get("", "PartsController.show");
+  Route.post("", "PartsController.store");
+})
+  .prefix("/parts")
+  .middleware("auth");
+
+Route.group(() => {
   Route.get("", "OsController.show");
   Route.post("store", "OsController.store");
 })
@@ -25,7 +32,7 @@ Route.group(() => {
   .middleware("auth");
 
 Route.group(() => {
-  Route.get(":name/:?phone", "ClientsController.show");
+  Route.get(":phone", "ClientsController.show");
   Route.post("store", "ClientsController.store");
 })
   .middleware("auth")

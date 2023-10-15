@@ -1,13 +1,12 @@
-// import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
-import { HttpContext } from "@adonisjs/core/build/standalone";
 import Database from "@ioc:Adonis/Lucid/Database";
 import { formRequest } from "@melchyore/adonis-form-request/build";
-import Client from "App/Models/Client";
-import ClientStoreRequest from "App/Requests/ClientStoreRequest";
+import PartsReport from "App/Models/PartsReport";
+import PartStoreRequest from "App/Requests/PartStoreRequest";
 
-export default class ClientsController {
-  public show({ params: { name, phone } }: HttpContext) {
+export default class PartsController {
+  public show({ params: { name, phone } }: HttpContextContract) {
     try {
       return (
         Database.from("clients")
@@ -36,17 +35,35 @@ export default class ClientsController {
     }
   }
 
-  @formRequest()
-  public store({}, request: ClientStoreRequest) {
+  public store({ request }) {
     try {
-      const data = request.validated();
-      return Client.create(data);
+      let {
+        created_at,
+        os_number,
+        part_name,
+        qtd,
+        sale_cost,
+        sale_value,
+        ticket,
+      } = request.body();
+
+      const data = {
+        created_at,
+        os_number,
+        part_name,
+        qtd,
+        sale_cost,
+        sale_value,
+        ticket,
+      };
+      console.log({ data });
+      return PartsReport.create(data);
     } catch (e) {
       let message = `Error: ${e.message}`;
       console.log(message);
       console.log(e.stack);
     }
     const data = request.validated();
-    return Client.create(data);
+    return PartsReport.create(data);
   }
 }
