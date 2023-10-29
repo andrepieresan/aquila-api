@@ -20,9 +20,41 @@ export default class ClientsController {
             "clients.document",
             "clients.mail"
           )
-          .whereILike(`clients.phone`, `%${phone}%`)
+          .where(`clients.phone`, phone)
+          .whereILike(`clients.name`, `%${name}%`)
           // .join("branchs", "clients.branch_id", "=", "branchs.id")
           .firstOrFail()
+      );
+      // return Client.query()
+      //   .whereILike("name", `%${name}%`)
+      //   .orWhereILike(`phone`, `%${phone}%`)
+      //   .innerJoin("branchs", "")
+      //   .firstOrFail();
+    } catch (e) {
+      let message = `Error: ${e.message}`;
+      console.log(message);
+      console.log(e.stack);
+    }
+  }
+
+  public async update({ request, params: { name, phone } }) {
+    try {
+      let data = request.body();
+      return (
+        Database.from("clients")
+          .select(
+            // "branchs.name as branch_name",
+            // "branchs.id as branch_id",
+            "clients.id as client_id",
+            "clients.name as client_name",
+            "clients.phone as phone",
+            "clients.document",
+            "clients.mail"
+          )
+          .where(`clients.phone`, phone)
+          .whereILike(`clients.name`, `%${name}%`)
+          // .join("branchs", "clients.branch_id", "=", "branchs.id")
+          .update(data)
       );
       // return Client.query()
       //   .whereILike("name", `%${name}%`)

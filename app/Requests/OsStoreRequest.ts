@@ -15,13 +15,14 @@ export default class OsStoreRequest extends FormRequest {
   public rules() {
     return {
       schema: schema.create({
-        client_id: schema.number(),
+        id: schema.number.optional(),
+        client_id: schema.number.optional(),
         branch_id: schema.number.optional(),
-        product: schema.string([rules.maxLength(255)]),
-        product_serial: schema.string([rules.maxLength(255)]),
-        status: schema.string([rules.maxLength(255)]),
-        defect_obs: schema.string([rules.maxLength(255)]),
-        created_by: schema.number(),
+        product: schema.string.optional([rules.maxLength(255)]),
+        product_serial: schema.string.optional([rules.maxLength(255)]),
+        status: schema.string.optional([rules.maxLength(255)]),
+        defect_obs: schema.string.optional([rules.maxLength(255)]),
+        created_at: schema.string.optional(),
       }),
     };
   }
