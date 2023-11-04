@@ -25,7 +25,7 @@ export default class OsHistory extends BaseModel {
   @column()
   public status: string;
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime()
   public created_at: DateTime;
 
   @column()

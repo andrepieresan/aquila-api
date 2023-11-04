@@ -22,7 +22,7 @@ Route.group(() => {
 // branch
 Route.group(() => {
   Route.get(":branch_name", "BranchesController.showOrCreate");
-  Route.post("", "BranchesController.store");
+  Route.post("", "BranchesController.showOrCreate");
 }).prefix("/branch");
 
 // AUTH
@@ -36,7 +36,7 @@ Route.group(() => {
 // SERVICES
 Route.group(() => {
   Route.get(":id", "OsController.getById");
-  Route.get("", "OsController.show");
+  Route.get(":from/:to", "OsController.show");
   Route.post("store", "OsController.store");
 }).prefix("/services");
 // .middleware("auth");

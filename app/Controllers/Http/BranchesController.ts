@@ -13,11 +13,12 @@ export default class BranchesController {
     }
   }
 
-  public async showOrCreate({ request, params: { branch_name } }) {
+  public async showOrCreate({ request }) {
     try {
+      let { branch_name } = request.body();
       const exist = await Database.from("branchs")
         .select("branchs.id as branch_id")
-        .whereILike(`branchs.name`, `%${branch_name}%`)
+        .whereILike(`branchs.name`, `${branch_name}`)
         .first();
       // .join("branchs", "clients.branch_id", "=", "branchs.id")
       // .firstOrFail();
@@ -27,8 +28,8 @@ export default class BranchesController {
           name: branch_name,
           active: 1,
         };
-
-        return await Branch.create(data);
+        let new_branch = await Branch.create(data);
+        return new_branch.id;
       }
       return exist.branch_id;
     } catch (e) {
