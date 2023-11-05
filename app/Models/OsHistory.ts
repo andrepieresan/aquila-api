@@ -25,7 +25,22 @@ export default class OsHistory extends BaseModel {
   @column()
   public status: string;
 
+  @column()
+  public ticket_amount: number;
+
+  @column()
+  public service_cost: number;
+
+  @column()
+  public part_cost: number;
+
   @column.dateTime()
+  public send_at: DateTime;
+
+  @column.dateTime()
+  public finished_at: DateTime;
+
+  @column.dateTime({ autoCreate: true })
   public created_at: DateTime;
 
   @column()

@@ -1,10 +1,9 @@
-// import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
+import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Branch from "App/Models/Branch";
 
 export default class BranchesController {
-  public async store({ request }) {
+  public async store({ request }: HttpContextContract) {
     try {
       const data = request.body();
       return await Branch.create(data);
@@ -13,9 +12,10 @@ export default class BranchesController {
     }
   }
 
-  public async showOrCreate({ request }) {
+  public async showOrCreate({ request }: HttpContextContract) {
     try {
       let { branch_name } = request.body();
+
       const exist = await Database.from("branchs")
         .select("branchs.id as branch_id")
         .whereILike(`branchs.name`, `${branch_name}`)
@@ -24,11 +24,11 @@ export default class BranchesController {
       // .firstOrFail();
 
       if (!exist) {
-        const data = {
+        const bData = {
           name: branch_name,
           active: 1,
         };
-        let new_branch = await Branch.create(data);
+        let new_branch = await Branch.create(bData);
         return new_branch.id;
       }
       return exist.branch_id;
