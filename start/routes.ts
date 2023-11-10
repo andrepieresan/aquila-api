@@ -35,10 +35,11 @@ Route.group(() => {
 
 // SERVICES
 Route.group(() => {
-  Route.get(":id", "OsController.getById");
-  Route.post(":id/set-status", "OsController.changeStatus");
   Route.post("", "OsController.show");
+  Route.get(":id", "OsController.getById");
   Route.post("store", "OsController.store");
+  Route.post("edit", "OsController.update");
+  Route.post(":id/set-status", "OsController.changeStatus");
 }).prefix("/services");
 // .middleware("auth");
 

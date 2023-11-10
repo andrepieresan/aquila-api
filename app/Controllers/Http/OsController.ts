@@ -3,6 +3,29 @@ import Database from "@ioc:Adonis/Lucid/Database";
 import OsHistory from "App/Models/OsHistory";
 
 export default class OsController {
+  public update({ request }: HttpContextContract) {
+    try {
+      let {
+        os_number: id,
+        defect_obs,
+        part_cost,
+        service_cost,
+        ticket_amount,
+      } = request.body();
+
+      console.log(defect_obs, part_cost, service_cost);
+
+      return Database.from("os_history")
+        .where("os_history.id", `${id}`)
+        .update({
+          defect_obs,
+          part_cost,
+          service_cost,
+          ticket_amount,
+        });
+    } catch (e) {}
+  }
+
   public getById({ params: { id } }: HttpContextContract) {
     try {
       return Database.from("os_history")
