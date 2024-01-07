@@ -8,21 +8,21 @@ export default class OsController {
       let {
         os_number: id,
         defect_obs,
-        part_name,
-        part_cost,
+        material_name,
+        material_cost,
         service_name,
         service_cost,
         ticket_amount,
       } = request.body();
 
-      console.log(defect_obs, part_cost, service_cost);
+      // console.log(defect_obs, material_cost, service_cost);
 
       return Database.from("os_history")
         .where("os_history.id", `${id}`)
         .update({
           defect_obs,
-          part_name,
-          part_cost,
+          material_name,
+          material_cost,
           service_name,
           service_cost,
           ticket_amount,
@@ -45,7 +45,12 @@ export default class OsController {
           "os_history.product",
           "os_history.status",
           "os_history.product_serial",
-          "os_history.defect_obs"
+          "os_history.defect_obs",
+          "os_history.material_name",
+          "os_history.material_cost",
+          "os_history.service_name",
+          "os_history.service_cost",
+          "os_history.ticket_amount"
         )
         .join("branchs", "os_history.branch_id", "=", "branchs.id")
         .join("clients", "os_history.client_id", "=", "clients.id")
@@ -57,7 +62,7 @@ export default class OsController {
   public changeStatus({ request, params: { id } }: HttpContextContract) {
     try {
       const data = request.body();
-      console.log(data);
+      // console.log(data);
       return Database.from("os_history")
         .where("os_history.id", `${id}`)
         .update(data);
@@ -67,7 +72,7 @@ export default class OsController {
   public show({ request }: HttpContextContract) {
     try {
       let { from, to } = request.body();
-      console.log(from, to);
+      // console.log(from, to);
       let xid = request.header("xid");
       return Database.from("os_history")
         .select(
