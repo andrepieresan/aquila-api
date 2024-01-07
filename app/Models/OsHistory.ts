@@ -4,7 +4,7 @@ import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
 export default class OsHistory extends BaseModel {
   public static table = "os_history";
 
-  @column()
+  @column({ isPrimary: true })
   public id: number;
 
   @column()
@@ -44,7 +44,7 @@ export default class OsHistory extends BaseModel {
   public created_at: DateTime;
 
   @column()
-  public created_by: number;
+  public created_by_user_id: string;
 
   @column()
   public deleted: number;

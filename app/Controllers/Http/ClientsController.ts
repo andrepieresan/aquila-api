@@ -6,17 +6,16 @@ import Client from "App/Models/Client";
 export default class ClientsController {
   public show({ request }: HttpContextContract) {
     try {
-      let { name, phone } = request.body();
-      console.log(name, phone);
+      let { name, contact } = request.body();
       return Database.from("clients")
         .select(
           "clients.id as client_id",
           "clients.name as client_name",
-          "clients.phone as phone",
+          "clients.contact as phone",
           "clients.document",
           "clients.mail"
         )
-        .where(`clients.phone`, phone)
+        .where(`clients.contact`, contact)
         .andWhereRaw(`INSTR(clients.name,'${name}') > 0`)
         .firstOrFail();
     } catch (e) {
@@ -29,17 +28,9 @@ export default class ClientsController {
   public async update({ request }: HttpContextContract) {
     try {
       let data = request.body();
-      return Database.from("clients")
-        .select(
-          "clients.id as client_id",
-          "clients.name as client_name",
-          "clients.phone as phone",
-          "clients.document",
-          "clients.mail"
-        )
-        .where(`clients.phone`, data.phone)
-        .andWhereRaw(`INSTR(clients.name,'${data.name}%') > 0`)
-        .update(data);
+      let client = await Client.findByOrFail("contact", data.contact);
+      client.merge(data).save();
+      client.serialize();
     } catch (e) {
       let message = `Error: ${e.message}`;
       console.log(message);
@@ -50,17 +41,18 @@ export default class ClientsController {
   @formRequest()
   public async store({ request }: HttpContextContract) {
     try {
-      let { name, phone } = request.body();
+      let { name, contact } = request.body();
 
       const exist = await Database.from("clients")
         .select("clients.id as client_id")
-        .whereILike(`clients.phone`, `${phone}`)
+        .whereILike(`clients.contact`, `${contact}`)
         .whereILike(`clients.name`, `${name}`)
         .first();
+
       if (!exist) {
         const cData = {
           name,
-          phone,
+          contact,
         };
 
         let new_client = await Client.create(cData);

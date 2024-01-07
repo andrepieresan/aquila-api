@@ -1,7 +1,9 @@
 import { DateTime } from "luxon";
-import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, column, scope } from "@ioc:Adonis/Lucid/Orm";
 
 export default class Client extends BaseModel {
+  public static table = "clients";
+
   @column({ isPrimary: true })
   public id: number;
 
@@ -9,7 +11,7 @@ export default class Client extends BaseModel {
   public name: string;
 
   @column()
-  public phone: string;
+  public contact: string;
 
   @column()
   public document: string;
@@ -17,9 +19,9 @@ export default class Client extends BaseModel {
   @column()
   public mail: string;
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime()
   public created_at: DateTime;
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updated_at: DateTime;
+  // @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // public updated_at: DateTime;
 }

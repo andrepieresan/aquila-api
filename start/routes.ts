@@ -33,7 +33,7 @@ Route.group(() => {
   .prefix("/parts")
   .middleware("auth");
 
-// SERVICES
+// ORDER SERVICES
 Route.group(() => {
   Route.post("", "OsController.show");
   Route.get(":id", "OsController.getById");
@@ -41,6 +41,13 @@ Route.group(() => {
   Route.post("edit", "OsController.update");
   Route.post(":id/set-status", "OsController.changeStatus");
 }).prefix("/services");
+// .middleware("auth");
+
+// MATERIALS
+Route.group(() => {
+  Route.get("", "MaterialsController.show");
+  Route.post("store", "MaterialsController.store");
+}).prefix("/materials")
 // .middleware("auth");
 
 // CLIENT

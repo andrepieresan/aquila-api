@@ -8,7 +8,9 @@ export default class OsController {
       let {
         os_number: id,
         defect_obs,
+        part_name,
         part_cost,
+        service_name,
         service_cost,
         ticket_amount,
       } = request.body();
@@ -19,7 +21,9 @@ export default class OsController {
         .where("os_history.id", `${id}`)
         .update({
           defect_obs,
+          part_name,
           part_cost,
+          service_name,
           service_cost,
           ticket_amount,
         });
@@ -33,12 +37,10 @@ export default class OsController {
           "branchs.name as branch_name",
           "clients.mail as mail",
           "clients.name as client_name",
-          "clients.phone as client_phone",
-          "os_history.service_cost",
-          "os_history.part_cost",
-          "os_history.ticket_amount",
+          "clients.contact as client_phone",
+          "os_history.service_code",
+          "os_history.material_code",
           "os_history.id as os_number",
-          "os_history.send_at",
           "os_history.created_at",
           "os_history.product",
           "os_history.status",
@@ -71,7 +73,7 @@ export default class OsController {
         .select(
           "branchs.name as branch_name",
           "clients.name as client_name",
-          "os_history.send_at",
+          // "os_history.send_at",
           "os_history.id as os_number",
           "os_history.created_at",
           "os_history.product",
@@ -81,7 +83,7 @@ export default class OsController {
         )
         .join("branchs", "os_history.branch_id", "=", "branchs.id")
         .join("clients", "os_history.client_id", "=", "clients.id")
-        .where("os_history.created_by", `${xid}`)
+        .where("os_history.created_by_user_id", `${xid}`)
         .whereBetween(`os_history.created_at`, [`${from} 00:00:00`, `${to}`]);
     } catch (e) {
       let message = `Error: ${e.message}`;
@@ -92,8 +94,27 @@ export default class OsController {
 
   public async store({ request }) {
     try {
-      let data = request.body();
-      return OsHistory.create(data);
+      let {
+        branch_id,
+        client_id,
+        created_at,
+        created_by_user_id,
+        defect_obs,
+        product,
+        product_serial,
+        status,
+      } = request.body();
+
+      return OsHistory.create({
+        branch_id,
+        client_id,
+        created_at,
+        created_by_user_id,
+        defect_obs,
+        product,
+        product_serial,
+        status,
+      });
     } catch (e) {
       let message = `Error: ${e.message}`;
       console.log(message);
